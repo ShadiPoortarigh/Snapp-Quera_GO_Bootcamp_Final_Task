@@ -9,7 +9,7 @@ import (
 )
 
 func subscribe(nc *nats.Conn, subj string, printMsg func([]byte, string)) (*nats.Subscription, error) {
-	//this is not concurrency safe nor checks if subscription with similar name already exist !
+
 	if sub, err := nc.Subscribe(subj, func(msg *nats.Msg) {
 		printMsg(msg.Data, msg.Subject)
 	}); err != nil {
