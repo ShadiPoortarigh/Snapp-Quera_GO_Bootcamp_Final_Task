@@ -25,6 +25,7 @@ The code implements a real-time chat application using NATS. The application sup
 ###### How to Run Chat:
 First, we need to pull the NATS server image and run it in a Docker container:
 
+```
 $ docker pull nats
 $ docker run --name nats --network nats --rm -p 4222:4222 -p 8222:8222 nats --http_port 8222
 
@@ -38,11 +39,17 @@ Now you can create a group and join the group. For example:
 $ +Golang
 $ @Golang
 
+```
+
 You can open any number of terminal windows and follow the instructions to register and join the group
 and start chatting. Whatever you send will be received by all active members of the group in real time.
+
 In addition, if #users command is run in the terminal window of the first member, it will list the name
 of all active members of the group.
 
+```
+$ #users
+```
 
 ##### api application:
 The second app implements a very simple distributed system that uses NATS for inter-service communication. It provides APIs for rate, purchase and sell services.
@@ -88,15 +95,19 @@ The second app implements a very simple distributed system that uses NATS for in
 ###### How to Run api:
 First, we need to pull the NATS server image and run it in a Docker container:
 
+```
 $ docker pull nats
 $ docker run --name nats --network nats --rm -p 4222:4222 -p 8222:8222 nats --http_port 8222
+```
 
 Then, strat http server and three other services, each in a separate window terminal:
 
+```
 $ go run api/cmd/http/main.go
 $ go run api/cmd/rate/main.go
 $ go run api/cmd/sell/main.go
 $ go run api/cmd/purchase/main.go
+```
 
 Now we can curl HTTP POST requests to the local server running at 127.0.0.1:8090, targeting the /rate,
 /sell and /purchase endpoints:
