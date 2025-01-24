@@ -1,13 +1,22 @@
-package main
+package purchase
 
 import (
+	"Snapp-Quera_GO_Bootcamp_Final_Task/api/pkg"
 	"encoding/json"
 	"fmt"
 	"log"
 )
 
+var MsgCount int
+
+type Handler func([]byte) []byte
+
+var Handlers = make(map[string]Handler)
+
+var SvcError = []byte(`{"error" : "internal service error"}`)
+
 func init() {
-	handlers["purchase"] = processPurchase
+	Handlers["purchase"] = processPurchase
 }
 
 func processPurchase(data []byte) []byte {
@@ -29,16 +38,15 @@ func processPurchase(data []byte) []byte {
 
 	if err := json.Unmarshal(data, &rq); err != nil {
 		log.Printf("[#purchase] cant Unmarshal [%s] to request", string(data))
-	} else if rate, err := rateAdapter(rq.CurrencyId); err != nil {
+	} else if rate, err := pkg.RateAdapter(rq.CurrencyId); err != nil {
 		log.Printf("[#purchase] error getting rate for [%+v] : %s", rq, err.Error())
-		return svcError
+		return SvcError
 	} else {
-		//check balance, insert trs into db etc
-		rp = rep{TrsId: fmt.Sprint(10000 + msgCount), Rate: rate, Total: -rate * rq.Amount}
+		rp = rep{TrsId: fmt.Sprint(10000 + MsgCount), Rate: rate, Total: -rate * rq.Amount}
 	}
 	if reply, err := json.Marshal(rp); err != nil {
 		log.Printf("[#purchase] cant Marshal [%+v] to response: %s", rp, err.Error())
-		return svcError
+		return SvcError
 	} else {
 		return reply
 	}

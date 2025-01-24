@@ -1,4 +1,4 @@
-package main
+package internal
 
 import (
 	"log"
@@ -6,7 +6,7 @@ import (
 	"github.com/nats-io/nats.go"
 )
 
-func publish(nc *nats.Conn, subj, msg string) {
+func Publish(nc *nats.Conn, subj, msg string) {
 
 	nc.Publish(subj, []byte(msg))
 

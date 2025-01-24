@@ -1,4 +1,4 @@
-package main
+package internal
 
 import (
 	"fmt"
@@ -8,7 +8,7 @@ import (
 	"github.com/nats-io/nats.go"
 )
 
-func subscribe(nc *nats.Conn, subj string, printMsg func([]byte, string)) (*nats.Subscription, error) {
+func Subscribe(nc *nats.Conn, subj string, printMsg func([]byte, string)) (*nats.Subscription, error) {
 
 	if sub, err := nc.Subscribe(subj, func(msg *nats.Msg) {
 		printMsg(msg.Data, msg.Subject)
@@ -27,7 +27,7 @@ func subscribe(nc *nats.Conn, subj string, printMsg func([]byte, string)) (*nats
 	}
 }
 
-func setupConnOptions(opts []nats.Option) []nats.Option {
+func SetupConnOptions(opts []nats.Option) []nats.Option {
 	totalWait := 10 * time.Minute
 	reconnectDelay := time.Second
 

@@ -1,12 +1,20 @@
-package main
+package rate
 
 import (
 	"encoding/json"
 	"log"
 )
 
+var MsgCount int
+
+type Handler func([]byte) []byte
+
+var Handlers = make(map[string]Handler)
+
+var SvcError = []byte(`{"error" : "internal service error"}`)
+
 func init() {
-	handlers["rate"] = processRate
+	Handlers["rate"] = processRate
 }
 
 func processRate(data []byte) []byte {
@@ -38,7 +46,7 @@ func processRate(data []byte) []byte {
 
 	if reply, err := json.Marshal(rp); err != nil {
 		log.Printf("[#rate] cant Marshal [%v] to response: %s", rp, err.Error())
-		return svcError
+		return SvcError
 	} else {
 		return reply
 	}

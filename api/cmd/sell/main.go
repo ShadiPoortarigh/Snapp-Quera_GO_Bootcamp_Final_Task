@@ -1,6 +1,8 @@
 package main
 
 import (
+	"Snapp-Quera_GO_Bootcamp_Final_Task/api/internal/sell"
+	"Snapp-Quera_GO_Bootcamp_Final_Task/api/pkg"
 	"log"
 	"os"
 	"os/signal"
@@ -8,14 +10,6 @@ import (
 
 	"github.com/nats-io/nats.go"
 )
-
-var msgCount int
-
-type handler func([]byte) []byte
-
-var handlers = make(map[string]handler)
-
-var svcError = []byte(`{"error" : "internal service error"}`) //use wrapper like JSON API/JSEND
 
 func main() {
 
@@ -25,14 +19,14 @@ func main() {
 	if nc, err := nats.Connect(nats.DefaultURL, opts...); err != nil {
 		log.Fatal(err)
 	} else {
-
+		pkg.RegisterAdapters(nc)
 		listenAndServe(nc)
 	}
 }
 
 func listenAndServe(nc *nats.Conn) {
 
-	for k, v := range handlers {
+	for k, v := range sell.Handlers {
 		nc.QueueSubscribe(k, k, handleMsg(nc, v))
 		log.Printf("Listening on [%s]", k)
 	}
@@ -42,13 +36,12 @@ func listenAndServe(nc *nats.Conn) {
 		log.Fatal(err)
 	}
 
-	// Setup the interrupt handler to drain so we don't miss requests when scaling down.
 	drainBeforeExit(nc)
 }
 
-func handleMsg(nc *nats.Conn, h handler) nats.MsgHandler {
+func handleMsg(nc *nats.Conn, h sell.Handler) nats.MsgHandler {
 	return func(msg *nats.Msg) {
-		msgCount += 1
+		sell.MsgCount += 1
 		var reply []byte
 
 		reply = h(msg.Data)
@@ -76,6 +69,7 @@ func setupConnOptions(opts []nats.Option) []nats.Option {
 	return opts
 }
 
+// graceful shutdown
 func drainBeforeExit(nc *nats.Conn) {
 	c := make(chan os.Signal, 1)
 	signal.Notify(c, os.Interrupt)

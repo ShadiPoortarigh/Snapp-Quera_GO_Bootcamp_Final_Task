@@ -1,4 +1,4 @@
-package main
+package pkg
 
 import (
 	"encoding/json"
@@ -21,11 +21,10 @@ func request(nc *nats.Conn, subj string, req []byte) ([]byte, error) {
 	}
 }
 
-// a better solution would be an abstracted function, not for this demo :)
-var rateAdapter func(currencyId string) (float64, error)
+var RateAdapter func(currencyId string) (float64, error)
 
-func registerAdapters(nc *nats.Conn) {
-	rateAdapter = func(currencyId string) (float64, error) {
+func RegisterAdapters(nc *nats.Conn) {
+	RateAdapter = func(currencyId string) (float64, error) {
 
 		type req struct {
 			ID string `json:"id"`
