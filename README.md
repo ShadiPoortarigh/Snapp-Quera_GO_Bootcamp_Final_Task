@@ -133,9 +133,11 @@ $ curl '127.0.0.1:8090/sell' -H 'content-type: application/json' --data-raw '{"a
 ##### Tests: 
 Finally, There are a couple of test cases, located in tests folder for each application.
 
+```
 $ cd chat/tests
 $ go test -v
 
 
 $ cd api/tests
 $ go test -v
+```
