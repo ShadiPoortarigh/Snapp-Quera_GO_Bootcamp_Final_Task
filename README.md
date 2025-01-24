@@ -28,7 +28,7 @@ First, we need to pull the NATS server image and run it in a Docker container:
 $ docker pull nats
 $ docker run --name nats --network nats --rm -p 4222:4222 -p 8222:8222 nats --http_port 8222
 
-Then open a terminal and run the app:
+Then, open a terminal and run the app:
 $ go run chat/cmd/main.go
 
 as soon as you enter the command, it asks you for your user name, enter something and press Enter::
@@ -101,20 +101,22 @@ $ go run api/cmd/purchase/main.go
 Now we can curl HTTP POST requests to the local server running at 127.0.0.1:8090, targeting the /rate,
 /sell and /purchase endpoints:
 
-Get the rate for btc
+```
+# Get the rate for btc
 $ curl '127.0.0.1:8090/rate' -H 'content-type: application/json' --data-raw '{"id":"btc"}'
 
-Get the rate for eth
+# Get the rate for eth
 $ curl '127.0.0.1:8090/rate' -H 'content-type: application/json' --data-raw '{"id":"eth"}'
 
-purchase btc
+# purchase btc
 $ curl '127.0.0.1:8090/purchase' -H 'content-type: application/json' --data-raw '{"accountId":"123","currencyId":"btc","amount":100}'
 
-purchase eth
+# purchase eth
 $ curl '127.0.0.1:8090/purchase' -H 'content-type: application/json' --data-raw '{"accountId":"123","currencyId":"eth","amount":15}'
 
-sell eth
+# sell eth
 $ curl '127.0.0.1:8090/sell' -H 'content-type: application/json' --data-raw '{"accountId":"123","currencyId":"eth","amount":20}'
+```
 
 
 ##### Tests: 
