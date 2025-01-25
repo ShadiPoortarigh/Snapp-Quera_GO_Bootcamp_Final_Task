@@ -4,7 +4,7 @@ In this project, I have implemented the use of NATS in the form of two separate 
 
 Lets talk about each one separately:
 
-##### chat:
+#### chat:
 The code implements a real-time chat application using NATS. The application supports features like join and leave chat groups dynamically, broadcast messages to all members of a selected group and view active users in a group.
 
 ###### How Components Communicate in Chat:
@@ -14,22 +14,24 @@ The code implements a real-time chat application using NATS. The application sup
 
 2. Internal Package:
     NATS Communication: Handles publishing and subscribing to topics.
-    User Events: Updates and synchronizes user states across clients using the system.users topic.
-    Messaging: Publishes user messages to the current group and receives messages from subscribed groups.
+    User Events: Updates and synchronizes user states across clients.
+    
+3. Messaging: 
+    Publishes user messages to the current group and receives messages from subscribed groups.
 
-3. Shared State:
+4. Shared State:
     Subscriptions (map[string]*nats.Subscription): Tracks groups the user is subscribed to.
     Active Users (map[string]map[string]bool): Tracks users currently active in each group.
     Broadcast Logs: Maintains the last broadcast details for each group.
 
 ###### How to Run Chat:
-First, we need to pull the NATS server image and run it in a Docker container:
+First, we need to pull the NATS server image and run it in a Docker container.open a terminal:
 
 ```
 $ docker pull nats
 $ docker run --name nats --network nats --rm -p 4222:4222 -p 8222:8222 nats --http_port 8222
 
-Then, open a terminal and run the app:
+Then, open another terminal and run the app:
 $ go run chat/cmd/main.go
 
 as soon as you enter the command, it asks you for your user name, enter something and press Enter::
@@ -51,7 +53,7 @@ of all active members of the group.
 $ #users
 ```
 
-##### api application:
+#### api:
 The second app implements a very simple distributed system that uses NATS for inter-service communication. It provides APIs for rate, purchase and sell services.
 
 ###### Communication Flow
@@ -62,7 +64,7 @@ The second app implements a very simple distributed system that uses NATS for in
     HTTP requests are translated into NATS messages using the respective subject (e.g., rate, purchase, sell).
 
 3. Service Handlers: 
-    Different microservices listen to these subjects and process the requests.
+    Different services listen to these subjects and process the requests.
 
 4. Response Handling: 
     The service handlers send replies back to the requester via NATS.
@@ -86,7 +88,7 @@ The second app implements a very simple distributed system that uses NATS for in
     Sell Service: Processes sell requests.
 
 4. Adapters:
-    RateAdapter abstracts the logic for retrieving exchange rates via NATS.
+    RateAdapter abstracts the business logic for retrieving exchange rates via NATS.
 
 5. Utilities:
     Connection management, reconnection handling, and graceful shutdown (drainBeforeExit) to ensure robust operations.
@@ -131,7 +133,7 @@ $ curl '127.0.0.1:8090/sell' -H 'content-type: application/json' --data-raw '{"a
 
 
 ##### Tests: 
-Finally, There are a couple of test cases, located in tests folder for each application.
+Finally, There are a couple of test cases, located in tests folder for each application. All services must be up and running:
 
 ```
 $ cd chat/tests
